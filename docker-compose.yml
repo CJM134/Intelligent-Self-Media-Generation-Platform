@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    # 后端服务
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ZHIPU_API_KEY=${ZHIPU_API_KEY}
+      - TIANAPI_KEY=${TIANAPI_KEY}
+      - DATABASE_URL=sqlite:///./content_agent.db
+      - DEBUG=False
+    volumes:
+      - ./backend:/app/backend
+      - ./data:/app/data
+      - db_data:/app
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    # 前端服务
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://backend:8000
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - backend
+    command: streamlit run frontend/app.py --server.port=8501 --server.address=0.0.0.0
+
+volumes:
+  # 数据持久化
+  db_data:

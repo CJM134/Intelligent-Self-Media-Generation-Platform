@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# 安装 Streamlit
+RUN pip install --no-cache-dir streamlit requests
+
+# 复制前端代码
+COPY frontend/ ./frontend/
+
+# 暴露端口
+EXPOSE 8501
+
+# 启动 Streamlit
+CMD ["streamlit", "run", "frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

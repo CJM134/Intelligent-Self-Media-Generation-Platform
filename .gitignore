@@ -1,0 +1,24 @@
+# 环境配置
+.env
+.env.*
+settings*.json
+*.lock
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+mypy_cache/
+
+# VS Code 配置
+.vscode/
+
+# 其他临时文件
+*.db
+*.log
