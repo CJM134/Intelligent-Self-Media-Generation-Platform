@@ -5,8 +5,11 @@
 ## ✨ 功能特性
 
 - **多平台文案生成** - 一份素材自动生成小红书、抖音、公众号、微博文案
+- **热点追踪** - 实时抓取微博、抖音、小红书等多平台热搜榜单
+- **数据分析与爆款预测** - 平台对比、趋势分析、高峰时段分析、爆款潜力 AI 预测
 - **敏感词过滤** - 自动检测并过滤敏感词
 - **历史记录管理** - 保存所有生成的文案记录
+- **定时任务** - 每 2 小时自动抓取热点并生成文案
 - **Web UI** - 简洁易用的 Streamlit 前端界面
 - **RESTful API** - 完整的 API 接口支持集成
 
@@ -25,7 +28,14 @@ my-content-agent/
 ├── backend/                    # 后端代码
 │   ├── main.py                # FastAPI 入口
 │   ├── config.py              # 配置管理
+│   ├── agents/                # AI Agent 层
+│   │   ├── collector_agent.py # 热点采集 Agent
+│   │   └── analyzer_agent.py  # 数据分析 Agent
 │   ├── services/              # 业务逻辑
+│   │   ├── hot_topic_fetcher.py    # 热点话题抓取
+│   │   ├── hot_topic_analyzer.py   # 热点数据分析
+│   │   ├── scheduled_tasks.py      # 定时任务
+│   │   └── api_clients/            # 外部 API 客户端
 │   ├── models/                # 数据模型
 │   ├── prompts/               # 提示词模板
 │   └── data/                  # 数据文件
@@ -130,13 +140,6 @@ GET /api/history?limit=10
 
 敏感词库位于 `backend/data/sensitive_words.txt`，每行一个敏感词。
 
-## 📊 下一步计划
-
-- [ ] 热点追踪功能
-- [ ] 数据分析和爆款预测
-- [ ] 自动发布功能
-- [ ] 用户认证系统
-- [ ] 高级分析仪表板
 
 ## 📄 许可证
 
