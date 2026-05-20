@@ -49,7 +49,7 @@ async def startup_event():
 
     # 初始化图像生成器
     try:
-        init_image_generator(llm_client)
+        init_image_generator(backend="jimeng")
     except Exception as e:
         logger.warning(f"图像生成器初始化失败: {str(e)}")
 
@@ -237,8 +237,21 @@ async def generate_from_topic(topic_id: int, db: Session = Depends(get_db)):
         history_manager = HistoryManager(db)
         history_manager.save_record(content, results)
 
-        # 生成配图
-        image_url = image_generator.generate(topic.title, topic.description or "")
+        # 使用 ImagePromptAgent 将文案转为生动的画面描述
+        image_prompt_agent = orchestrator.get_agent("image_prompt")
+        if image_prompt_agent:
+            platform_contents = {
+                p: results.get(p, "")
+                for p in ["weibo", "douyin", "xiaohongshu", "wechat"]
+            }
+            visual_desc = await image_prompt_agent.generate_prompt(topic.title, platform_contents)
+            content_for_image = visual_desc if visual_desc else topic.description or ""
+        else:
+            # 降级：拼接文案
+            content_for_image = "\n".join(filter(None, [
+                results.get(p, "") for p in ["weibo", "douyin", "xiaohongshu"]
+            ])) or topic.description or ""
+        image_url = image_generator.generate(topic.title, content_for_image)
         if image_url:
             logger.info(f"配图生成成功")
 

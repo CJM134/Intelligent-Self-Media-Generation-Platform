@@ -8,6 +8,7 @@ from .writer_agent import WriterAgent
 from .analyzer_agent import AnalyzerAgent
 from .critic_agent import CriticAgent
 from .memory_agent import MemoryAgent
+from .image_prompt_agent import ImagePromptAgent
 
 __all__ = [
     # 核心抽象
@@ -21,4 +22,5 @@ __all__ = [
     "AnalyzerAgent",
     "CriticAgent",
     "MemoryAgent",
+    "ImagePromptAgent",
 ]

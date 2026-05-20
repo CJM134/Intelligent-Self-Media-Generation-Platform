@@ -13,6 +13,7 @@ from backend.agents.writer_agent import WriterAgent
 from backend.agents.analyzer_agent import AnalyzerAgent
 from backend.agents.critic_agent import CriticAgent
 from backend.agents.memory_agent import MemoryAgent
+from backend.agents.image_prompt_agent import ImagePromptAgent
 from backend.agents.message_bus import MessageBus, MessageType
 
 logger = logging.getLogger(__name__)
@@ -351,6 +352,9 @@ class OrchestratorAgent(BaseAgent):
         writer.set_critic(critic)
         orchestrator.register_agent("writer", writer)
         orchestrator.register_agent("critic", critic)
+
+        image_prompt = ImagePromptAgent(llm_client=llm_client, llm_model=llm_model)
+        orchestrator.register_agent("image_prompt", image_prompt)
 
         memory = MemoryAgent()
         orchestrator.register_agent("memory", memory)

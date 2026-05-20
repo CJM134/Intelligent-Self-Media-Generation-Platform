@@ -170,8 +170,21 @@ class ScheduledTaskService:
                     # 存入历史记录
                     db = SessionLocal()
                     try:
-                        # 生成配图
-                        image_url = image_generator.generate(title, desc)
+                        # 使用 ImagePromptAgent 将文案转为生动的画面描述
+                        image_prompt_agent = self.orchestrator.get_agent("image_prompt")
+                        if image_prompt_agent:
+                            platform_contents = {
+                                p: results.get(p, "")
+                                for p in ["weibo", "douyin", "xiaohongshu", "wechat"]
+                            }
+                            visual_desc = await image_prompt_agent.generate_prompt(title, platform_contents)
+                            content_for_image = visual_desc if visual_desc else desc
+                        else:
+                            # 降级：拼接文案
+                            content_for_image = "\n".join(filter(None, [
+                                results.get(p, "") for p in ["weibo", "douyin", "xiaohongshu"]
+                            ])) or desc
+                        image_url = image_generator.generate(title, content_for_image)
 
                         record = ContentHistory(
                             original_content=content,
